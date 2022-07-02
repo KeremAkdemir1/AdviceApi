@@ -1,0 +1,41 @@
+version: "3"
+services:
+  rabbitmq:
+    image: 'rabbitmq:3.6-management-alpine'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      AMQP_URL: 'amqp://rabbitmq?connection_attempts=5?retry_delay=5'
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+
+
+  redis:
+    image: redis
+    ports:
+      - 3307:3307
+
+#-------------------------------------------------------------------------------------------------------------------#
+  mysqldb:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: customerdatabase
+      MYSQL_USER: sa
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
+
+
+
+
+  mysqllesson:
+    image: mysqllesson:latest
+    ports:
+      - 8080:8080
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - mysqldb
